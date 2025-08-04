@@ -1,5 +1,7 @@
 import './styles/common.css'
 import Home from './pages/Home'
+import Navbar from './components/shared/Navbar'
+import Footer from './components/shared/Footer'
 
 import { Route, Routes } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,9 +9,11 @@ import { useDispatch, useSelector } from 'react-redux'
 function App() {
    return (
       <>
+         <Navbar />
          <Routes>
             <Route path="/" element={<Home />} />
          </Routes>
+         <Footer />
       </>
    )
 }
