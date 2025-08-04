@@ -6,103 +6,140 @@ const router = express.Router()
 // GET /api/items - 상품 목록 조회
 router.get('/', async (req, res) => {
    try {
-      const { page = 1, limit = 10, status, keyword } = req.query
+      const page = parseInt(req.query.page, 10) || 1
+      const limit = parseInt(req.query.limit, 10) || 5
       const offset = (page - 1) * limit
 
-      // 검색 조건
-      const whereClause = {}
-      if (status) {
-         whereClause.status = status
-      }
-      if (keyword) {
-         whereClause[Op.or] = [{ name: { [Op.like]: `%${keyword}%` } }, { content: { [Op.like]: `%${keyword}%` } }]
+      // 판매상태, 상품명, 상품설명 값 가져오기
+      const searchTerm = req.query.searchTerm || '' // 사용자가 입력한 검색어
+      const searchCategory = req.query.searchCategory || 'itemNm' // 상품명 or 상품설명으로 검색
+      const sellCategory = req.query.sellCategory
+
+      // 조건부 where 절을 만드는 객체
+      const whereClause = {
+         // serchTerm이 존재하면 해당 검색어(searchTerm)가 포함된 검색 범주(searchCategory)를 조건으로 추가
+         // => itemDetail like '%가방%' 혹은 itemNm like %가방%
+         ...(searchTerm && {
+            [searchCategory]: {
+               [Op.like]: `%${searchTerm}%`,
+            },
+         }),
+
+         ...(sellCategory && {
+            itemSellStatus: sellCategory,
+         }),
       }
 
-      const items = await Item.findAndCountAll({
+      // 전체 상품 갯수
+      const count = await Item.count({
          where: whereClause,
+      })
+
+      const items = await Item.findAll({
+         where: whereClause,
+         limit,
+         offset,
+         order: [['createdAt', 'DESC']],
          include: [
             {
                model: Img,
-               as: 'images',
-               attributes: ['id', 'url', 'alt'],
-            },
-            {
-               model: Keyword,
-               as: 'keywords',
-               through: { attributes: [] },
-               attributes: ['id', 'name'],
+               attributes: ['id', 'originName', 'imgUrl', 'field'],
             },
          ],
-         limit: parseInt(limit),
-         offset: offset,
-         order: [['createdAt', 'DESC']],
       })
 
       res.json({
          success: true,
-         data: {
-            items: items.rows,
-            pagination: {
-               total: items.count,
-               page: parseInt(page),
-               limit: parseInt(limit),
-               totalPages: Math.ceil(items.count / limit),
-            },
+         message: '상품 목록 조회 성공',
+         items,
+         pagination: {
+            totalItems: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            limit,
          },
       })
    } catch (error) {
-      console.error('상품 목록 조회 오류:', error)
-      res.status(500).json({
-         success: false,
-         message: '상품 목록을 가져오는데 실패했습니다.',
-         error: error.message,
-      })
+      error.status = 500
+      error.message = '전체 상품 리스트를 불러오는 중 오류가 발생했습니다.'
+      next(error)
    }
 })
 
-// GET /api/items/:id - 상품 상세 조회
-router.get('/:id', async (req, res) => {
+// GET /items/:id - 상품 상세 조회
+router.get('/:id', async (req, res, next) => {
    try {
-      const { id } = req.params
+      const id = req.params.id
 
-      const item = await Item.findByPk(id, {
+      const item = await Item.findOne({
+         where: { id },
          include: [
             {
                model: Img,
-               as: 'images',
-               attributes: ['id', 'url', 'alt'],
-            },
-            {
-               model: Keyword,
-               as: 'keywords',
-               through: { attributes: [] },
-               attributes: ['id', 'name'],
+               attributes: ['id', 'originName', 'imgUrl', 'field'],
             },
          ],
       })
 
       if (!item) {
-         return res.status(404).json({
-            success: false,
-            message: '상품을 찾을 수 없습니다.',
-         })
+         const error = new Error('해당 상품을 찾을 수 없습니다.')
+         error.status = 404
+         return next(error)
       }
 
       res.json({
          success: true,
-         data: item,
+         message: '상품 조회 성공',
+         item,
       })
    } catch (error) {
-      console.error('상품 상세 조회 오류:', error)
-      res.status(500).json({
-         success: false,
-         message: '상품 정보를 가져오는데 실패했습니다.',
-         error: error.message,
-      })
+      error.status = 500
+      error.message = '상품을 불러오는 중 오류가 발생했습니다.'
+      next(error)
    }
 })
 
-// POST /api/items - 상품 등록
+/**
+ * @swagger
+ * /item:
+ *   post:
+ *     summary: 상품 등록
+ *     tags: [Item]
+ *     consumes:
+ *       - multipart/form-data
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *                itemNm:
+ *                   type: string
+ *                   description: 상품명
+ *                price:
+ *                   type: number
+ *                   description: 가격
+ *                itemDetail:
+ *                   type: string
+ *                   description: 상품 상세
+ *                itemSellStatus:
+ *                   type: string
+ *                   description: 판매상태(SELL, SOLD_OUT, ON_SALE)
+ *                img:
+ *                   type: array
+ *                   items:
+ *                      type: string
+ *                      format: binary
+ *                   description: 업로드 이미지 파일 목록(최대 5개)
+ *     responses:
+ *          201:
+ *             description: 상품 등록 성공
+ *          400:
+ *             description: 파일 업로드 실패
+ *          500:
+ *             description: 서버 오류
+ */
 router.post('/', async (req, res) => {
    const transaction = await sequelize.transaction()
 
