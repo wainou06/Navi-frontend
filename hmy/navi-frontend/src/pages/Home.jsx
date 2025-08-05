@@ -16,7 +16,7 @@ function Home({ searchTerm }) {
    return (
       <div className="main">
          <div>
-            <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
+            <Swiper navigation={true} modules={[Navigation]}>
                <SwiperSlide>
                   <img src="/images/banner1.jpg" alt="나비 뜻" />
                </SwiperSlide>
