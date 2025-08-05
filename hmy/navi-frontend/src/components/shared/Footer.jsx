@@ -23,21 +23,21 @@ function Footer() {
             </div>
             <ul className="footer_menu">
                <li>
-                  회사
+                  <b>회사</b>
                   <ul>
                      <li>나비 소개</li>
                      <li>서비스 소개</li>
                   </ul>
                </li>
                <li>
-                  탐색
+                  <b>탐색</b>
                   <ul>
                      <li>중고거래</li>
                      <li>렌트하기</li>
                   </ul>
                </li>
                <li>
-                  비즈니스
+                  <b>비즈니스</b>
                   <ul>
                      <li>나비 비즈니스</li>
                      <li>제휴 문의</li>
@@ -45,7 +45,7 @@ function Footer() {
                   </ul>
                </li>
                <li>
-                  문의
+                  <b>문의</b>
                   <ul>
                      <li>고객센터</li>
                      <li>IR</li>
@@ -56,7 +56,7 @@ function Footer() {
          </div>
          <div className="bottom">
             <p>
-               <b>(주)나비</b>
+               <b>(주) 나비</b>
             </p>
             <p>
                <b>팀장</b> 황민영

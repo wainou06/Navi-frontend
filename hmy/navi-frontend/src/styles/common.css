@@ -1,8 +1,12 @@
 *,
 body {
-   margin: 0;
+   margin: 0 auto;
    padding: 0;
    box-sizing: border-box;
+}
+
+#root {
+   width: 1920px;
 }
 
 a {
@@ -17,8 +21,11 @@ ul {
 header .shadow {
    margin: 0 auto;
    box-shadow: 0px -10px 50px 5px rgba(0, 0, 0, 0.25);
+   width: 100%;
    height: 120px;
    padding: 20px;
+   display: flex;
+   justify-content: center;
 }
 
 nav {
@@ -35,11 +42,11 @@ nav {
 .search {
    display: flex;
    align-items: center;
-   width: 627px;
+   min-width: 627px;
    height: 60px;
    border: 1px solid #f0907f;
    border-radius: 30px;
-   margin-right: 20px;
+   margin-right: 160px;
 }
 
 .search input {
@@ -60,7 +67,7 @@ nav {
 }
 
 .nav_menu {
-   width: 365px;
+   min-width: 365px;
    display: flex;
    justify-content: space-between;
 }
@@ -84,7 +91,8 @@ footer .top {
 footer .middle {
    display: flex;
    justify-content: center;
-   margin-bottom: 85px;
+   padding-bottom: 85px;
+   border-bottom: 1px solid #f0907f;
 }
 
 .middle div {
@@ -106,6 +114,33 @@ footer .middle {
 .footer_menu {
    display: flex;
    justify-content: space-between;
-   width: 662px;
+   min-width: 662px;
    margin-top: 75px;
+   color: #f0907f;
+}
+
+.footer_menu ul {
+   margin-top: 20px;
+}
+
+.footer_menu ul li {
+   margin-top: 10px;
+}
+
+footer .bottom {
+   color: #f0907f;
+   padding: 40px 150px 30px;
+}
+
+.bottom p {
+   margin-bottom: 10px;
+}
+
+.bottom p:last-of-type {
+   margin-top: 30px;
+   margin-bottom: 0;
+}
+
+.bottom p:last-of-type span {
+   margin-right: 25px;
 }
