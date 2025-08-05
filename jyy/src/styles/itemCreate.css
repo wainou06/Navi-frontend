@@ -1,0 +1,287 @@
+/* ItemCreate.css */
+
+/* 전체 배경 */
+.item-create-container {
+   background: linear-gradient(135deg, #e0f2fe 0%, #bbdefb 100%);
+   min-height: 100vh;
+   padding: 16px 0;
+}
+
+/* 메인 컨테이너 스타일 재정의 */
+.item-create-container .MuiContainer-root {
+   background: transparent !important;
+}
+
+/* 헤더 영역 */
+.item-create-header {
+   margin-bottom: 24px !important;
+}
+
+.item-create-header .MuiIconButton-root {
+   background: rgba(255, 255, 255, 0.7) !important;
+   margin-right: 12px !important;
+   transition: all 0.2s ease !important;
+}
+
+.item-create-header .MuiIconButton-root:hover {
+   background: rgba(255, 255, 255, 0.9) !important;
+   transform: translateY(-1px);
+}
+
+.item-create-title {
+   color: #1565c0 !important;
+   font-weight: 700 !important;
+   font-size: 28px !important;
+}
+
+/* Paper 컨테이너 재설계 */
+.item-create-paper {
+   background: transparent !important;
+   box-shadow: none !important;
+   padding: 0 !important;
+}
+
+/* 각 섹션 카드 스타일 */
+.form-section-card {
+   background: white !important;
+   border-radius: 12px !important;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+   margin-bottom: 16px !important;
+   overflow: hidden !important;
+}
+
+/* 섹션 헤더 */
+.section-header {
+   background: #2196f3 !important;
+   color: white !important;
+   padding: 8px 16px !important;
+   font-size: 14px !important;
+   font-weight: 600 !important;
+   margin: 0 !important;
+}
+
+.section-description {
+   background: #f8f9fa !important;
+   padding: 8px 16px !important;
+   font-size: 13px !important;
+   color: #666 !important;
+   border-bottom: 1px solid #e9ecef !important;
+}
+
+/* 섹션 내용 */
+.section-content {
+   padding: 20px !important;
+}
+
+/* TextField 스타일 재정의 */
+.item-create-container .MuiTextField-root {
+   margin-bottom: 0 !important;
+}
+
+.item-create-container .MuiOutlinedInput-root {
+   background: white !important;
+   border-radius: 8px !important;
+}
+
+.item-create-container .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+   border-color: #2196f3 !important;
+}
+
+.item-create-container .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+   border-color: #2196f3 !important;
+   border-width: 2px !important;
+}
+
+/* 이미지 업로드 섹션 */
+.image-upload-container {
+   background: white !important;
+   border-radius: 12px !important;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+   margin-bottom: 16px !important;
+   overflow: hidden !important;
+}
+
+.image-upload-header {
+   background: #2196f3 !important;
+   color: white !important;
+   padding: 12px 16px !important;
+   display: flex !important;
+   align-items: center !important;
+   justify-content: space-between !important;
+}
+
+.image-upload-title {
+   font-size: 14px !important;
+   font-weight: 600 !important;
+   margin: 0 !important;
+}
+
+.image-upload-subtitle {
+   font-size: 12px !important;
+   opacity: 0.8 !important;
+   margin: 0 !important;
+}
+
+/* 이미지 업로드 드래그 영역 */
+.image-drop-zone {
+   border: 2px dashed #2196f3 !important;
+   border-radius: 8px !important;
+   padding: 32px !important;
+   text-align: center !important;
+   margin: 20px !important;
+   background: #f8f9ff !important;
+   transition: all 0.2s ease !important;
+   cursor: pointer !important;
+}
+
+.image-drop-zone:hover {
+   background: #f0f7ff !important;
+   border-color: #1976d2 !important;
+   transform: translateY(-2px) !important;
+}
+
+.image-drop-zone .MuiSvgIcon-root {
+   font-size: 48px !important;
+   color: #2196f3 !important;
+   margin-bottom: 12px !important;
+}
+
+/* 이미지 그리드 재스타일링 */
+.image-grid-container {
+   padding: 20px !important;
+   display: grid !important;
+   grid-template-columns: repeat(5, 1fr) !important;
+   gap: 12px !important;
+}
+
+.image-preview-item {
+   aspect-ratio: 1 !important;
+   border-radius: 8px !important;
+   overflow: hidden !important;
+   position: relative !important;
+   background: #f5f5f5 !important;
+   border: 2px solid #e0e0e0 !important;
+}
+
+.image-preview-item img {
+   width: 100% !important;
+   height: 100% !important;
+   object-fit: cover !important;
+}
+
+.image-placeholder {
+   display: flex !important;
+   flex-direction: column !important;
+   align-items: center !important;
+   justify-content: center !important;
+   height: 100% !important;
+   background: #fafafa !important;
+   border: 2px dashed #ccc !important;
+   border-radius: 8px !important;
+   cursor: pointer !important;
+   transition: all 0.2s ease !important;
+}
+
+.image-placeholder:hover {
+   background: #f0f0f0 !important;
+   border-color: #2196f3 !important;
+}
+
+.image-placeholder .MuiSvgIcon-root {
+   color: #999 !important;
+   margin-bottom: 4px !important;
+}
+
+.image-placeholder-text {
+   font-size: 11px !important;
+   color: #2196f3 !important;
+   font-weight: 500 !important;
+}
+
+/* Select 박스 스타일 */
+.item-create-container .MuiSelect-select {
+   background: white !important;
+   border-radius: 8px !important;
+}
+
+/* 상세설명 textarea */
+.description-section {
+   background: white !important;
+   border-radius: 12px !important;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+   margin-bottom: 16px !important;
+   padding: 20px !important;
+}
+
+.description-title {
+   font-size: 16px !important;
+   font-weight: 600 !important;
+   color: #333 !important;
+   margin-bottom: 16px !important;
+}
+
+.description-divider {
+   width: 60px !important;
+   height: 3px !important;
+   background: #2196f3 !important;
+   margin: 16px auto !important;
+   border-radius: 2px !important;
+}
+
+/* 버튼 영역 */
+.button-section {
+   background: #2196f3 !important;
+   border-radius: 12px !important;
+   padding: 20px !important;
+   box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3) !important;
+}
+
+.button-section .MuiButton-root {
+   border-radius: 8px !important;
+   padding: 12px 24px !important;
+   font-weight: 600 !important;
+   text-transform: none !important;
+}
+
+.button-section .MuiButton-outlined {
+   background: white !important;
+   color: #2196f3 !important;
+   border-color: white !important;
+}
+
+.button-section .MuiButton-outlined:hover {
+   background: #f5f5f5 !important;
+   border-color: #f5f5f5 !important;
+}
+
+.button-section .MuiButton-contained {
+   background: #1976d2 !important;
+   box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3) !important;
+}
+
+.button-section .MuiButton-contained:hover {
+   background: #1565c0 !important;
+   box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4) !important;
+}
+
+/* Alert 메시지 스타일 */
+.item-create-container .MuiAlert-root {
+   border-radius: 12px !important;
+   margin-bottom: 16px !important;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+   .image-grid-container {
+      grid-template-columns: repeat(3, 1fr) !important;
+   }
+
+   .item-create-title {
+      font-size: 24px !important;
+   }
+
+   .section-content {
+      padding: 16px !important;
+   }
+}

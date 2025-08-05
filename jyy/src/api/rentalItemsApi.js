@@ -91,7 +91,7 @@ export const rentalItemsAPI = {
       }
    },
 
-   // 렌탈상품 삭제
+   // 렌탈 상품 삭제
    deleteRentalItem: async (id) => {
       try {
          const response = await naviApi.delete(`/rental-items/${id}`)
