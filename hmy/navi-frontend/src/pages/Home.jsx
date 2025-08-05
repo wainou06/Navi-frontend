@@ -10,7 +10,9 @@ import { Navigation } from 'swiper/modules'
 
 import { Link } from 'react-router-dom'
 
-function Home() {
+import ItemSellList from '../components/item/ItemSellList'
+
+function Home({ searchTerm }) {
    return (
       <div className="main">
          <div>
@@ -36,6 +38,14 @@ function Home() {
             <Link to="/rental/list">
                <div style={{ backgroundColor: '#FFD1BA', color: '#AA3900' }}>물건 렌탈하러 가기 &gt;</div>
             </Link>
+         </div>
+         <div>
+            <h1 style={{ fontFamily: 'Ghanachocolate, sans-serif' }}>나누는 중…</h1>
+            <ItemSellList searchTerm={searchTerm} />
+         </div>
+         <div>
+            <h1 style={{ fontFamily: 'Ghanachocolate, sans-serif' }}>빌려주는 중…</h1>
+            <ItemSellList searchTerm={searchTerm} />
          </div>
       </div>
    )

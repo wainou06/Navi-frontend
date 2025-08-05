@@ -5,7 +5,7 @@ export const getItems = async (data) => {
    try {
       const { page, limit, searchTerm = '', searchCategory = '', sellCategory = '' } = data
 
-      const response = await naviApi.get(`/item?page=${page}&limit=${limit}&searchTerm=${searchTerm}&searchCategory=${searchCategory}&sellCategory=${sellCategory}`)
+      const response = await naviApi.get(`/items?page=${page}&limit=${limit}&searchTerm=${searchTerm}&searchCategory=${searchCategory}&sellCategory=${sellCategory}`)
 
       return response
    } catch (error) {
