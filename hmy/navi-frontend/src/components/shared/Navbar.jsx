@@ -21,7 +21,7 @@ function Navbar({ isAuthenticated, user, onSearch }) {
       dispatch(logoutUserThunk())
          .unwrap()
          .then(() => {
-            navigate('/') // 로그아웃시 홈으로 이동
+            navigate('/')
          })
          .catch((error) => {
             alert('로그아웃 실패: ' + error)
@@ -120,10 +120,14 @@ function Navbar({ isAuthenticated, user, onSearch }) {
                                  </Link>
                               </MenuItem>
                               <MenuItem>
-                                 <Typography sx={{ textAlign: 'center' }}>렌탈 내역</Typography>
+                                 <Link to="/my/rental">
+                                    <Typography sx={{ textAlign: 'center' }}>렌탈 내역</Typography>
+                                 </Link>
                               </MenuItem>
                               <MenuItem>
-                                 <Typography sx={{ textAlign: 'center' }}>거래 내역</Typography>
+                                 <Link to="/my/deal">
+                                    <Typography sx={{ textAlign: 'center' }}>거래 내역</Typography>
+                                 </Link>
                               </MenuItem>
                               <MenuItem>
                                  <Typography sx={{ textAlign: 'center' }}>1:1 채팅</Typography>
