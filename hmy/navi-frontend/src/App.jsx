@@ -4,7 +4,6 @@ import Navbar from './components/shared/Navbar'
 import Footer from './components/shared/Footer'
 
 import { Route, Routes } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
 
 function App() {
    return (

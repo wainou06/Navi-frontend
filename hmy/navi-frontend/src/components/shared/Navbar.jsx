@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 function Navbar() {
    return (
       <header>
-         <div>
-            <img src="/images/" alt="" />
+         <div className='shadow'>
+            <img src="/images/logo.png" alt="로고" height='69'/>
          </div>
       </header>
    )
