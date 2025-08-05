@@ -4,7 +4,7 @@ const { Op } = require('sequelize')
 const router = express.Router()
 
 // GET /api/items - 상품 목록 조회
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
    try {
       const page = parseInt(req.query.page, 10) || 1
       const limit = parseInt(req.query.limit, 10) || 5
@@ -17,8 +17,6 @@ router.get('/', async (req, res) => {
 
       // 조건부 where 절을 만드는 객체
       const whereClause = {
-         // serchTerm이 존재하면 해당 검색어(searchTerm)가 포함된 검색 범주(searchCategory)를 조건으로 추가
-         // => itemDetail like '%가방%' 혹은 itemNm like %가방%
          ...(searchTerm && {
             [searchCategory]: {
                [Op.like]: `%${searchTerm}%`,
