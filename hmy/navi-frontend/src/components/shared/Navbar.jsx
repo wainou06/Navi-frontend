@@ -52,7 +52,7 @@ function Navbar({ isAuthenticated, user, onSearch }) {
    }
 
    return (
-      <header>
+      <header >
          <div className="shadow">
             <nav>
                <Link to="/" className="logo">
