@@ -41,6 +41,7 @@ router.get('/', async (req, res, next) => {
          include: [
             {
                model: Img,
+               as: 'imgs',
                attributes: ['id', 'originName', 'imgUrl', 'field'],
             },
          ],
@@ -74,6 +75,7 @@ router.get('/:id', async (req, res, next) => {
          include: [
             {
                model: Img,
+               as: 'imgs',
                attributes: ['id', 'originName', 'imgUrl', 'field'],
             },
          ],
