@@ -109,6 +109,7 @@ router.get('/status', async (req, res, next) => {
             user: {
                id: req.user.id,
                name: req.user.name,
+               nick: req.user.nick,
                role: req.user.role,
             },
          })
