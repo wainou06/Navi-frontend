@@ -35,7 +35,7 @@ export const logoutUserThunk = createAsyncThunk('auth/logoutUser', async (_, { r
 export const checkAuthStatusThunk = createAsyncThunk('auth/checkAuthStatus', async (_, { rejectWithValue }) => {
    try {
       const response = await checkAuthStatus()
-      return response.data
+      return response
    } catch (error) {
       return rejectWithValue(error.response?.data?.message)
    }

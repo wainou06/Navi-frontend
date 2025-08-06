@@ -13,6 +13,8 @@ import { useDispatch } from 'react-redux'
 import { logoutUserThunk } from '../../features/authSlice'
 
 function Navbar({ isAuthenticated, user, onSearch }) {
+   console.log('user:', user)
+
    const dispatch = useDispatch()
    const navigate = useNavigate()
    const [anchorElUser, setAnchorElUser] = useState(null)
@@ -89,7 +91,7 @@ function Navbar({ isAuthenticated, user, onSearch }) {
                               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                  <Avatar alt={user?.name} src="/images/로그인상태.png" />
                                  <Typography variant="span" style={{ marginRight: '20px', color: '#000', fontSize: 14 }}>
-                                    {user?.name} 님
+                                    {user?.nick}님
                                  </Typography>
                               </IconButton>
                            </Tooltip>

@@ -37,7 +37,7 @@ export const logoutUser = async () => {
 export const checkAuthStatus = async () => {
    try {
       const response = await naviApi.get('/auth/status')
-      return response
+      return response.data
    } catch (error) {
       console.error(`API Request 오류: ${error}`)
       throw error
