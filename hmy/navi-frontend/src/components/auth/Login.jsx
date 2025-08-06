@@ -15,17 +15,15 @@ function Login() {
    const handleLogin = (e) => {
       e.preventDefault()
 
-      // 이메일과 패스워드가 둘다 공백이 아니라면 실행
       if (email.trim() && password.trim()) {
          dispatch(loginUserThunk({ email, password }))
             .unwrap()
             .then(() => {
-               navigate('/')
+               window.location.href = '/'
             })
             .catch((error) => console.error('로그인 실패: ', error))
       } else {
          alert('이메일과 패스워드를 입력해주세요!')
-         return
       }
    }
 
@@ -42,7 +40,7 @@ function Login() {
          )}
 
          <form onSubmit={handleLogin}>
-            <TextField label="이메일" name="email" fullWidth margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <TextField label="이메일" name="email" fullWidth margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} variant="outlined" />
 
             <TextField label="비밀번호" type="password" name="password" fullWidth margin="normal" value={password} onChange={(e) => setPassword(e.target.value)} />
 
