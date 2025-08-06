@@ -42,11 +42,15 @@ function Home({ searchTerm }) {
          </div>
          <div>
             <h1 style={{ fontFamily: 'Ghanachocolate, sans-serif' }}>나누는 중…</h1>
-            <ItemSellList searchTerm={searchTerm} className="item" />
+            <div className="item">
+               <ItemSellList searchTerm={searchTerm} />
+            </div>
          </div>
          <div>
             <h1 style={{ fontFamily: 'Ghanachocolate, sans-serif' }}>빌려주는 중…</h1>
-            <RentalSellList searchTerm={searchTerm} className="rental" />
+            <div className="rental">
+               <RentalSellList searchTerm={searchTerm} />
+            </div>
          </div>
       </div>
    )
