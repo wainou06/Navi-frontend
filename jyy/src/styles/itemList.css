@@ -425,53 +425,12 @@
    border-radius: 6px;
 }
 
-/* 반응형 */
-@media (max-width: 768px) {
-   .top-header {
-      flex-direction: column;
-      gap: 12px;
-      padding: 16px;
-   }
+.status-on-sale {
+   background-color: #ff9800;
+   color: white;
+}
 
-   .search-section {
-      margin: 0;
-      max-width: none;
-      width: 100%;
-   }
-
-   .user-actions {
-      width: 100%;
-      justify-content: center;
-   }
-
-   .main-container {
-      padding: 0 16px;
-   }
-
-   .products-grid {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 12px;
-   }
-
-   .filter-section {
-      flex-wrap: wrap;
-      gap: 8px;
-   }
-
-   .product-image {
-      height: 120px !important;
-   }
-
-   .product-info {
-      padding: 8px !important;
-   }
-
-   .product-title {
-      font-size: 12px !important;
-      height: 28px !important;
-   }
-
-   .product-price {
-      font-size: 14px !important;
-   }
+.status-unknown {
+   background-color: #9e9e9e;
+   color: white;
 }
