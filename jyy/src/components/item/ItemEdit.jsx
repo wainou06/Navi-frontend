@@ -1,16 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, CloudUpload, Trash2, Save, X } from 'lucide-react'
-import { createItem } from '../../features/itemsSlice.js'
+import { updateItem, fetchItem } from '../../features/itemsSlice.js'
 import { Container, Box, IconButton, Typography, Alert, Paper, Grid, TextField, FormControl, InputLabel, Select, MenuItem, Button, ImageList, ImageListItem, ImageListItemBar, CircularProgress } from '@mui/material'
 import { Delete, Cancel } from '@mui/icons-material'
 import '../../styles/ItemCreate.css'
 
-const ItemCreate = () => {
+const ItemEdit = () => {
    const dispatch = useDispatch()
    const navigate = useNavigate()
-   const { createLoading, error } = useSelector((state) => state.items)
+   const { id } = useParams() // URL에서 상품 ID 가져오기
+   const { updateLoading, error, currentItem } = useSelector((state) => state.items)
 
    const [formData, setFormData] = useState({
       name: '',
@@ -24,6 +25,42 @@ const ItemCreate = () => {
 
    const [imagePreviews, setImagePreviews] = useState([])
    const [formErrors, setFormErrors] = useState({})
+   const [loading, setLoading] = useState(true)
+
+   // 기존 상품 데이터 불러오기
+   useEffect(() => {
+      const loadItemData = async () => {
+         try {
+            setLoading(true)
+            const result = await dispatch(fetchItem(id)).unwrap()
+
+            setFormData({
+               name: result.name || '',
+               price: result.price || '',
+               stock: result.stock || '',
+               content: result.content || '',
+               status: result.status || 'available',
+               keywords: result.keywords || '',
+               images: result.images || [],
+            })
+
+            // 기존 이미지 미리보기 설정
+            if (result.images && result.images.length > 0) {
+               setImagePreviews(result.images.map((img) => (typeof img === 'string' ? img : URL.createObjectURL(img))))
+            }
+         } catch (error) {
+            console.error('상품 정보 불러오기 실패:', error)
+            alert('상품 정보를 불러오는데 실패했습니다.')
+            navigate('/items/list')
+         } finally {
+            setLoading(false)
+         }
+      }
+
+      if (id) {
+         loadItemData()
+      }
+   }, [id, dispatch, navigate])
 
    const handleInputChange = (e) => {
       const { name, value } = e.target
@@ -70,8 +107,10 @@ const ItemCreate = () => {
       const newImages = formData.images.filter((_, i) => i !== index)
       const newPreviews = imagePreviews.filter((_, i) => i !== index)
 
-      // URL 해제
-      URL.revokeObjectURL(imagePreviews[index])
+      // 새로 업로드한 이미지의 URL만 해제 (기존 이미지는 문자열 URL이므로 제외)
+      if (typeof imagePreviews[index] === 'string' && imagePreviews[index].startsWith('blob:')) {
+         URL.revokeObjectURL(imagePreviews[index])
+      }
 
       setFormData((prev) => ({
          ...prev,
@@ -107,27 +146,36 @@ const ItemCreate = () => {
       }
 
       try {
-         await dispatch(createItem(formData)).unwrap()
-         alert('상품이 성공적으로 등록되었습니다.')
-         navigate && navigate('/items/list')
+         const updateData = {
+            id: id,
+            itemData: formData,
+         }
+         await dispatch(updateItem(updateData)).unwrap()
+         alert('상품이 성공적으로 수정되었습니다.')
+         navigate('/items/list')
       } catch (error) {
-         console.error('상품 등록 실패:', error)
+         console.error('상품 수정 실패:', error)
       }
    }
 
-   const handleReset = () => {
-      setFormData({
-         name: '',
-         price: '',
-         stock: '',
-         content: '',
-         status: 'available',
-         keywords: '',
-         images: [],
-      })
-      imagePreviews.forEach((url) => URL.revokeObjectURL(url))
-      setImagePreviews([])
-      setFormErrors({})
+   const handleCancel = () => {
+      if (window.confirm('수정을 취소하시겠습니까? 변경사항이 저장되지 않습니다.')) {
+         navigate('/items/list')
+      }
+   }
+
+   // 로딩 중일 때
+   if (loading) {
+      return (
+         <Container maxWidth="md" sx={{ py: 4 }}>
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+               <CircularProgress />
+               <Typography variant="h6" sx={{ ml: 2 }}>
+                  상품 정보를 불러오는 중...
+               </Typography>
+            </Box>
+         </Container>
+      )
    }
 
    return (
@@ -139,7 +187,7 @@ const ItemCreate = () => {
                   <ArrowLeft />
                </IconButton>
                <Typography variant="h4" component="h1" className="item-create-title">
-                  상품 등록
+                  상품 수정
                </Typography>
             </Box>
 
@@ -266,8 +314,7 @@ const ItemCreate = () => {
                            <InputLabel>판매상태</InputLabel>
                            <Select name="status" value={formData.status} label="판매상태" onChange={handleInputChange}>
                               <MenuItem value="available">판매중</MenuItem>
-                              <MenuItem value="reserved">예약중</MenuItem>
-                              <MenuItem value="unavailable">판매완료</MenuItem>
+                              <MenuItem value="unavailable">품절</MenuItem>
                            </Select>
                         </FormControl>
                      </div>
@@ -276,8 +323,11 @@ const ItemCreate = () => {
                   {/* 버튼 섹션 */}
                   <div className="button-section">
                      <Box display="flex" gap={2}>
-                        <Button type="submit" variant="contained" startIcon={createLoading ? <CircularProgress size={16} /> : <Save />} disabled={createLoading} sx={{ flex: 2 }}>
-                           {createLoading ? '등록 중...' : '상품등록'}
+                        <Button type="submit" variant="contained" startIcon={updateLoading ? <CircularProgress size={16} /> : <Save />} disabled={updateLoading} sx={{ flex: 1 }}>
+                           {updateLoading ? '수정 중...' : '상품수정'}
+                        </Button>
+                        <Button type="button" variant="outlined" startIcon={<Cancel />} onClick={handleCancel} sx={{ flex: 1 }}>
+                           취소
                         </Button>
                      </Box>
                   </div>
@@ -288,4 +338,4 @@ const ItemCreate = () => {
    )
 }
 
-export default ItemCreate
+export default ItemEdit

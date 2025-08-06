@@ -52,8 +52,9 @@ const ItemsList = () => {
    const handleFilterClick = (filterType) => {
       setActiveFilter(filterType)
       let status = ''
-      if (filterType === '판매중') status = 'available'
-      if (filterType === '품절') status = 'unavailable'
+      if (filterType === '판매중') status = 'SELL'
+      if (filterType === '품절') status = 'SOLD_OUT'
+      if (filterType === '할인중') status = 'ON_SALE'
 
       const newFilters = { ...filters, status, page: 1 }
       setFilters(newFilters)
@@ -84,11 +85,29 @@ const ItemsList = () => {
    }
 
    const getStatusText = (status) => {
-      return status === 'available' ? '판매중' : '품절'
+      switch (status) {
+         case 'SELL':
+            return '판매중'
+         case 'SOLD_OUT':
+            return '품절'
+         case 'ON_SALE':
+            return '할인중'
+         default:
+            return '알 수 없음'
+      }
    }
 
    const getStatusClass = (status) => {
-      return status === 'available' ? 'status-available' : 'status-sold'
+      switch (status) {
+         case 'SELL':
+            return 'status-available'
+         case 'SOLD_OUT':
+            return 'status-sold'
+         case 'ON_SALE':
+            return 'status-on-sale'
+         default:
+            return 'status-unknown'
+      }
    }
 
    return (
@@ -146,7 +165,7 @@ const ItemsList = () => {
                      {items.map((item) => (
                         <div key={item.id} className="product-card">
                            {/* 상태 라벨 */}
-                           <div className={`product-status-label ${getStatusClass(item.status)}`}>{getStatusText(item.status)}</div>
+                           <div className={`product-status-label ${getStatusClass(item.itemSellStatus)}`}>{getStatusText(item.itemSellStatus)}</div>
 
                            {/* 액션 버튼들 */}
                            <div className="product-actions">
@@ -162,15 +181,15 @@ const ItemsList = () => {
                            </div>
 
                            {/* 상품 이미지 */}
-                           <div className="product-image">{item.images && item.images.length > 0 ? <img src={`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/uploads${item.images[0].url}`} alt={item.name} /> : <div className="placeholder-image">이미지</div>}</div>
+                           <div className="product-image" onClick={() => navigate(`/items/detail/${item.id}`)}>
+                              {item.imgs && item.imgs.length > 0 ? <img src={`${import.meta.env.VITE_APP_API_URL}/${item.imgs[0].imgUrl.replace(/\\/g, '/')}`} alt={item.itemNm} /> : <div className="placeholder-image">이미지</div>}
+                           </div>
 
                            {/* 상품 정보 */}
                            <div className="product-info">
-                              <div className="product-title">{item.name}</div>
+                              <div className="product-title">{item.itemNm}</div>
                               <div className="product-price">{formatPrice(item.price)}원</div>
-                              <div className="product-meta">
-                                 재고 {item.stock}개 · 키워드 {item.keywords?.length || 0}개
-                              </div>
+                              <div className="product-meta">{item.updatedAt ? new Date(item.updatedAt).toLocaleString() : '정보 없음'}</div>
                            </div>
                         </div>
                      ))}
@@ -195,7 +214,7 @@ const ItemsList = () => {
             <DialogTitle>상품 삭제</DialogTitle>
             <DialogContent>
                <Typography>
-                  '{deleteDialog.item?.name}' 상품을 정말 삭제하시겠습니까?
+                  '{deleteDialog.item?.itemNm}' 상품을 정말 삭제하시겠습니까?
                   <br />이 작업은 되돌릴 수 없습니다.
                </Typography>
             </DialogContent>

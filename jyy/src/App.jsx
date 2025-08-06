@@ -10,6 +10,8 @@ import LoginPage from './pages/LoginPage'
 // import Footer from './components/shared/Footer'
 import ItemListPage from './pages/ItemListPage'
 import ItemCreatePage from './pages/ItemCreatePage'
+import ItemEditPage from './pages/ItemEditPage'
+import ItemDetailPage from './pages/ItemDetailPage'
 
 import { checkAuthStatusThunk } from './features/authSlice'
 
@@ -33,6 +35,8 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/items/list" element={<ItemListPage key={location.key} />} />
             <Route path="/items/create" element={<ItemCreatePage />} />
+            <Route path="/items/edit/:id" element={<ItemEditPage />} />
+            <Route path="/items/detail/:id" element={<ItemDetailPage />} />
          </Routes>
       </>
    )
