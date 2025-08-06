@@ -30,6 +30,9 @@ const itemSlice = createSlice({
       resetSelectedItem(state) {
          state.selectedItem = null
       },
+      setCurrentPage: (state, action) => {
+         state.pagination.currentPage = action.payload
+      },
    },
    extraReducers: (builder) => {
       builder
@@ -73,5 +76,5 @@ const itemSlice = createSlice({
    },
 })
 
-export const { resetSelectedItem } = itemSlice.actions
+export const { resetSelectedItem, setCurrentPage } = itemSlice.actions
 export default itemSlice.reducer
