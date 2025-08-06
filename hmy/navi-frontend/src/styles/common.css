@@ -97,6 +97,14 @@ div.main .togo {
    border-radius: 70px;
 }
 
+.item {
+   margin-top: 60px;
+}
+
+.rental {
+   margin-top: 60px;
+}
+
 /* 푸터 */
 
 footer .top {
