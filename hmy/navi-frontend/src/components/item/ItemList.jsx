@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { Typography, Button, Pagination, Dialog, DialogTitle, DialogContent, DialogActions, Alert, CircularProgress } from '@mui/material'
 import { Add, Edit, Delete, Visibility, ShoppingCart } from '@mui/icons-material'
 import { fetchItemsThunk, deleteItemThunk, setCurrentPage } from '../../features/itemSlice'
-import '../../styles/itemList.css'
 
 const ItemsList = () => {
    const dispatch = useDispatch()

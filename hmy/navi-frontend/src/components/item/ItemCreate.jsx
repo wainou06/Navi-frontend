@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
+// pages/ItemCreate.jsx
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, CloudUpload, Trash2, Save, X } from 'lucide-react'
+import { Container, Box, IconButton, Typography, Alert, Paper, Grid, TextField, FormControl, InputLabel, Select, MenuItem, Button, CircularProgress, Snackbar } from '@mui/material'
+import { ArrowLeft, Save } from 'lucide-react'
 import { createItemThunk } from '../../features/itemSlice'
-import { Container, Box, IconButton, Typography, Alert, Paper, Grid, TextField, FormControl, InputLabel, Select, MenuItem, Button, ImageList, ImageListItem, ImageListItemBar, CircularProgress } from '@mui/material'
-import { Delete, Cancel } from '@mui/icons-material'
-import '../../styles/ItemCreate.css'
+import ImageUploader from './ImageUpLoader'
 
 const ItemCreate = () => {
    const dispatch = useDispatch()
    const navigate = useNavigate()
-   const { createLoading, error } = useSelector((state) => state.items)
+   const { loading, error } = useSelector((state) => state.items)
 
    const [formData, setFormData] = useState({
       name: '',
@@ -19,271 +19,97 @@ const ItemCreate = () => {
       content: '',
       status: 'available',
       keywords: '',
-      images: [],
    })
 
-   const [imagePreviews, setImagePreviews] = useState([])
-   const [formErrors, setFormErrors] = useState({})
+   const [images, setImages] = useState([])
+   const [previews, setPreviews] = useState([])
+   const [snack, setSnack] = useState({ open: false, message: '' })
 
    const handleInputChange = (e) => {
       const { name, value } = e.target
       setFormData((prev) => ({
          ...prev,
-         [name]: value,
+         [name]: name === 'price' || name === 'stock' ? Number(value) : value,
       }))
-
-      // 에러 제거
-      if (formErrors[name]) {
-         setFormErrors((prev) => ({
-            ...prev,
-            [name]: '',
-         }))
-      }
-   }
-
-   const handleImageUpload = (e) => {
-      const files = Array.from(e.target.files)
-      const validFiles = files.filter((file) => {
-         return file.type.startsWith('image/') && file.size <= 5 * 1024 * 1024 // 5MB 제한
-      })
-
-      if (formData.images.length + validFiles.length > 5) {
-         alert('최대 5개의 이미지만 업로드할 수 있습니다.')
-         return
-      }
-
-      const newImages = [...formData.images, ...validFiles]
-      const newPreviews = [...imagePreviews]
-
-      validFiles.forEach((file) => {
-         newPreviews.push(URL.createObjectURL(file))
-      })
-
-      setFormData((prev) => ({
-         ...prev,
-         images: newImages,
-      }))
-      setImagePreviews(newPreviews)
-   }
-
-   const handleImageRemove = (index) => {
-      const newImages = formData.images.filter((_, i) => i !== index)
-      const newPreviews = imagePreviews.filter((_, i) => i !== index)
-
-      // URL 해제
-      URL.revokeObjectURL(imagePreviews[index])
-
-      setFormData((prev) => ({
-         ...prev,
-         images: newImages,
-      }))
-      setImagePreviews(newPreviews)
    }
 
    const validateForm = () => {
-      const errors = {}
-
-      if (!formData.name.trim()) {
-         errors.name = '상품명을 입력해주세요.'
-      }
-
-      if (!formData.price || formData.price <= 0) {
-         errors.price = '올바른 가격을 입력해주세요.'
-      }
-
-      if (formData.stock === '' || formData.stock < 0) {
-         errors.stock = '올바른 재고수량을 입력해주세요.'
-      }
-
-      setFormErrors(errors)
-      return Object.keys(errors).length === 0
+      if (!formData.name.trim()) return '상품명을 입력해주세요.'
+      if (!formData.price || formData.price <= 0) return '올바른 가격을 입력해주세요.'
+      if (formData.stock < 0 || formData.stock === '') return '올바른 재고수량을 입력해주세요.'
+      return ''
    }
 
    const handleSubmit = async (e) => {
       e.preventDefault()
+      const errorMsg = validateForm()
+      if (errorMsg) return setSnack({ open: true, message: errorMsg })
 
-      if (!validateForm()) {
-         return
-      }
+      const submitData = new FormData()
+      submitData.append('itemNm', formData.name)
+      submitData.append('price', formData.price)
+      submitData.append('itemDetail', formData.content)
+      submitData.append('itemSellStatus', formData.status)
+      submitData.append('keywords', formData.keywords)
+
+      images.forEach((image) => submitData.append('img', image))
 
       try {
-         await dispatch(createItemThunk(formData)).unwrap()
-         alert('상품이 성공적으로 등록되었습니다.')
-         navigate && navigate('/items/list')
-      } catch (error) {
-         console.error('상품 등록 실패:', error)
+         await dispatch(createItemThunk(submitData)).unwrap()
+         setSnack({ open: true, message: '상품이 성공적으로 등록되었습니다.' })
+         navigate('/items/list')
+      } catch (err) {
+         console.error(err)
+         setSnack({ open: true, message: '상품 등록에 실패했습니다.' })
       }
-   }
-
-   const handleReset = () => {
-      setFormData({
-         name: '',
-         price: '',
-         stock: '',
-         content: '',
-         status: 'available',
-         keywords: '',
-         images: [],
-      })
-      imagePreviews.forEach((url) => URL.revokeObjectURL(url))
-      setImagePreviews([])
-      setFormErrors({})
    }
 
    return (
-      <div className="item-create-container">
-         <Container maxWidth="md" sx={{ py: 4 }}>
-            {/* 헤더 */}
-            <Box display="flex" alignItems="center" className="item-create-header">
-               <IconButton onClick={() => navigate('/items/list')}>
-                  <ArrowLeft />
-               </IconButton>
-               <Typography variant="h4" component="h1" className="item-create-title">
-                  상품 등록
-               </Typography>
-            </Box>
+      <Container maxWidth="md" sx={{ py: 4 }}>
+         <Box display="flex" alignItems="center">
+            <IconButton onClick={() => navigate('/items/list')}>
+               <ArrowLeft />
+            </IconButton>
+            <Typography variant="h4">상품 등록</Typography>
+         </Box>
 
-            {/* 에러 메시지 */}
-            {error && (
-               <Alert severity="error" sx={{ mb: 3 }}>
-                  {error}
-               </Alert>
-            )}
+         {error && <Alert severity="error">{error}</Alert>}
 
-            <Paper className="item-create-paper">
-               <form onSubmit={handleSubmit}>
-                  {/* 제목 섹션 */}
-                  <div className="form-section-card">
-                     <div className="section-header">제목</div>
-                     <div className="section-description">제목으로 상품명을 작성해주세요.</div>
-                     <div className="section-content">
-                        <TextField fullWidth name="name" value={formData.name} onChange={handleInputChange} error={!!formErrors.name} helperText={formErrors.name} placeholder="상품명을 입력하세요" variant="outlined" />
-                     </div>
-                  </div>
+         <Paper sx={{ mt: 3, p: 3 }}>
+            <form onSubmit={handleSubmit}>
+               <TextField fullWidth name="name" label="상품명" value={formData.name} onChange={handleInputChange} sx={{ mb: 2 }} />
 
-                  {/* 가격 섹션 */}
-                  <div className="form-section-card">
-                     <div className="section-header">가격</div>
-                     <div className="section-description">상품 가격을 입력해주세요.</div>
-                     <div className="section-content">
-                        <Grid container spacing={2}>
-                           <Grid item xs={12} sm={6}>
-                              <TextField
-                                 fullWidth
-                                 label="가격"
-                                 name="price"
-                                 type="number"
-                                 value={formData.price}
-                                 onChange={handleInputChange}
-                                 error={!!formErrors.price}
-                                 helperText={formErrors.price}
-                                 InputProps={{
-                                    endAdornment: '원',
-                                 }}
-                              />
-                           </Grid>
-                           <Grid item xs={12} sm={6}>
-                              <TextField
-                                 fullWidth
-                                 label="재고수량"
-                                 name="stock"
-                                 type="number"
-                                 value={formData.stock}
-                                 onChange={handleInputChange}
-                                 error={!!formErrors.stock}
-                                 helperText={formErrors.stock}
-                                 InputProps={{
-                                    endAdornment: '개',
-                                 }}
-                              />
-                           </Grid>
-                        </Grid>
-                     </div>
-                  </div>
+               <Grid container spacing={2} sx={{ mb: 2 }}>
+                  <Grid item xs={6}>
+                     <TextField fullWidth label="가격" name="price" type="number" value={formData.price} onChange={handleInputChange} />
+                  </Grid>
+                  <Grid item xs={6}>
+                     <TextField fullWidth label="재고수량" name="stock" type="number" value={formData.stock} onChange={handleInputChange} />
+                  </Grid>
+               </Grid>
 
-                  {/* 이미지 업로드 섹션 */}
-                  <div className="image-upload-container">
-                     <div className="image-upload-header">
-                        <div>
-                           <div className="image-upload-title">이미지 업로드</div>
-                           <div className="image-upload-subtitle">(최대 5개까지 가능, 첫 이미지가 대표 이미지가 됩니다.)</div>
-                        </div>
-                     </div>
+               <ImageUploader images={images} setImages={setImages} previews={previews} setPreviews={setPreviews} />
 
-                     {/* 이미지 그리드 */}
-                     <div className="image-grid-container">
-                        {[0, 1, 2, 3, 4].map((index) => (
-                           <div key={index} className="image-preview-item">
-                              {imagePreviews[index] ? (
-                                 <>
-                                    <img src={imagePreviews[index]} alt={`preview-${index}`} />
-                                    <IconButton
-                                       sx={{
-                                          position: 'absolute',
-                                          top: 4,
-                                          right: 4,
-                                          background: 'rgba(244, 67, 54, 0.8)',
-                                          color: 'white',
-                                          '&:hover': { background: 'rgba(244, 67, 54, 1)' },
-                                       }}
-                                       size="small"
-                                       onClick={() => handleImageRemove(index)}
-                                    >
-                                       <X size={16} />
-                                    </IconButton>
-                                 </>
-                              ) : (
-                                 <label className="image-placeholder">
-                                    <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} multiple={index === 0} />
-                                    <CloudUpload />
-                                    <div className="image-placeholder-text">이미지</div>
-                                 </label>
-                              )}
-                           </div>
-                        ))}
-                     </div>
-                  </div>
+               <TextField fullWidth name="keywords" label="키워드" value={formData.keywords} onChange={handleInputChange} sx={{ my: 2 }} helperText="예: 의류, 여성, 캐주얼" />
 
-                  {/* 키워드 섹션 */}
-                  <div className="form-section-card">
-                     <div className="section-header">키워드 선택 ▼</div>
-                     <div className="section-content">
-                        <TextField fullWidth name="keywords" value={formData.keywords} onChange={handleInputChange} placeholder="키워드를 쉼표로 구분해서 입력하세요" helperText="예: 의류, 여성, 캐주얼" />
-                     </div>
-                  </div>
+               <TextField fullWidth multiline rows={5} name="content" label="상세 설명" value={formData.content} onChange={handleInputChange} sx={{ mb: 2 }} />
 
-                  {/* 상세설명 섹션 */}
-                  <div className="description-section">
-                     <Typography className="description-title">상세 설명을 작성해주세요.</Typography>
-                     <TextField fullWidth name="content" value={formData.content} onChange={handleInputChange} multiline rows={6} placeholder="상품에 대한 상세한 설명을 입력하세요" variant="outlined" />
-                     <div className="description-divider"></div>
-                  </div>
+               <FormControl fullWidth sx={{ mb: 3 }}>
+                  <InputLabel>판매상태</InputLabel>
+                  <Select name="status" value={formData.status} onChange={handleInputChange} label="판매상태">
+                     <MenuItem value="available">판매중</MenuItem>
+                     <MenuItem value="unavailable">품절</MenuItem>
+                  </Select>
+               </FormControl>
 
-                  {/* 판매상태 섹션 */}
-                  <div className="form-section-card">
-                     <div className="section-content">
-                        <FormControl fullWidth>
-                           <InputLabel>판매상태</InputLabel>
-                           <Select name="status" value={formData.status} label="판매상태" onChange={handleInputChange}>
-                              <MenuItem value="available">판매중</MenuItem>
-                              <MenuItem value="unavailable">품절</MenuItem>
-                           </Select>
-                        </FormControl>
-                     </div>
-                  </div>
+               <Button type="submit" variant="contained" fullWidth startIcon={loading ? <CircularProgress size={16} /> : <Save />} disabled={loading}>
+                  {loading ? '등록 중...' : '상품 등록'}
+               </Button>
+            </form>
+         </Paper>
 
-                  {/* 버튼 섹션 */}
-                  <div className="button-section">
-                     <Box display="flex" gap={2}>
-                        <Button type="submit" variant="contained" startIcon={createLoading ? <CircularProgress size={16} /> : <Save />} disabled={createLoading} sx={{ flex: 2 }}>
-                           {createLoading ? '등록 중...' : '상품등록'}
-                        </Button>
-                     </Box>
-                  </div>
-               </form>
-            </Paper>
-         </Container>
-      </div>
+         <Snackbar open={snack.open} autoHideDuration={3000} message={snack.message} onClose={() => setSnack({ ...snack, open: false })} />
+      </Container>
    )
 }
 

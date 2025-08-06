@@ -96,14 +96,15 @@ router.get('/:id', async (req, res, next) => {
    }
 })
 
-// uploads 폴더가 없을 경우 새로 생성
+// uploads 폴더가 없으면 생성
 try {
-   fs.readdirSync('uploads') //해당 폴더가 있는지 확인
+   fs.readdirSync('uploads')
 } catch (error) {
    console.log('uploads 폴더가 없어 uploads 폴더를 생성합니다.')
-   fs.mkdirSync('uploads') //폴더 생성
+   fs.mkdirSync('uploads')
 }
 
+// multer 설정
 const storage = multer.diskStorage({
    destination(req, file, cb) {
       cb(null, 'uploads/')
@@ -117,14 +118,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage })
 
-// 상품 등록
+// 상품 등록 라우터
 router.post('/', upload.array('img', 10), async (req, res) => {
    try {
-      const { itemNm, price, itemDetail, itemSellStatus, keywords, orderId } = req.body
+      const { itemNm, price, itemDetail, itemSellStatus, keywords } = req.body
 
-      // 필수값 검증
-      if (!orderId) {
-         return res.status(400).json({ success: false, message: 'orderId는 필수입니다.' })
+      // 필수값 검증 (orderId 제거)
+      if (!itemNm || !price || !itemDetail || !itemSellStatus) {
+         return res.status(400).json({ success: false, message: '필수 입력값이 누락되었습니다.' })
       }
 
       // 1. Item 저장
@@ -133,7 +134,7 @@ router.post('/', upload.array('img', 10), async (req, res) => {
          price,
          itemDetail,
          itemSellStatus,
-         orderId,
+         keywords, // 필요하면 넣기
       })
 
       // 2. Img 저장 (파일이 있다면)
@@ -153,8 +154,6 @@ router.post('/', upload.array('img', 10), async (req, res) => {
       res.status(500).json({ success: false, message: '상품 등록 실패', error: err.message })
    }
 })
-
-module.exports = router
 
 // PUT /api/items/:id - 상품 수정
 router.put('/:id', async (req, res) => {

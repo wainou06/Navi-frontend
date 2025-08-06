@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux'
 import { logoutUserThunk } from '../../features/authSlice'
 
 function Navbar({ isAuthenticated, user, onSearch }) {
+   console.log(user)
    const dispatch = useDispatch()
    const navigate = useNavigate()
    const [anchorElUser, setAnchorElUser] = useState(null)
@@ -73,9 +74,9 @@ function Navbar({ isAuthenticated, user, onSearch }) {
 
                   <li>
                      {isAuthenticated ? (
-                        <Link to="/items/create">
+                        <Link to={user?.access === 'MANAGER' ? '/manager' : '/items/create'}>
                            <img src="/images/글쓰기.png" alt="상품등록" height="50" />
-                           <span>상품등록</span>
+                           <span>{user?.access === 'MANAGER' ? '상품관리' : '상품등록'}</span>
                         </Link>
                      ) : (
                         <Link to="/signup">

@@ -110,7 +110,7 @@ router.get('/status', async (req, res, next) => {
                id: req.user.id,
                name: req.user.name,
                nick: req.user.nick,
-               role: req.user.role,
+               access: req.user.access,
             },
          })
       } else {

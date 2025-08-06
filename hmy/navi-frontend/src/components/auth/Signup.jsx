@@ -33,7 +33,7 @@ function Signup() {
    }
 
    const handleSignup = () => {
-      if (!email.trim() || !name.trim() || !address.trim() || !password.trim() || !confirmPassword.trim()) {
+      if (!email.trim() || !name.trim() || !address.trim() || !password.trim() || !confirmPassword.trim() || !nick.trim() || !phone.trim()) {
          alert('모든 필드를 입력해주세요!')
          return
       }

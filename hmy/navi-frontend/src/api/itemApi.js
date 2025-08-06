@@ -19,13 +19,13 @@ export const getItems = async (data) => {
 export const createItem = async (itemData) => {
    try {
       const formData = new FormData()
-      formData.append('itemNm', itemData.itemNm)
-      formData.append('price', itemData.price)
-      if (itemData.itemDetail) formData.append('itemDetail', itemData.itemDetail)
-      if (itemData.itemSellStatus) formData.append('itemSellStatus', itemData.itemSellStatus)
-      if (itemData.keywords) formData.append('keywords', itemData.keywords)
+      formData.append('itemNm', itemData.itemNm ?? '')
+      formData.append('price', itemData.price ?? '')
+      formData.append('itemDetail', itemData.itemDetail ?? '')
+      formData.append('itemSellStatus', itemData.itemSellStatus ?? '')
+      formData.append('keywords', itemData.keywords ?? '')
 
-      if (itemData.images && itemData.images.length > 0) {
+      if (itemData.images?.length) {
          itemData.images.forEach((image) => {
             formData.append('img', image)
          })
@@ -34,12 +34,13 @@ export const createItem = async (itemData) => {
       const config = { headers: { 'Content-Type': 'multipart/form-data' } }
       const response = await naviApi.post('/items', formData, config)
 
-      return response.data.data // createdItem
+      return response.data.data
    } catch (error) {
       console.error('상품 등록 오류:', error)
       throw error.response?.data || error
    }
 }
+
 
 // 단일 상품 조회
 export const getItemById = async (id) => {
