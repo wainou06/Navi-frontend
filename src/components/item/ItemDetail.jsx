@@ -54,22 +54,19 @@ const ItemDetail = ({ onDeleteSubmit, onEditSubmit, onPriceProposal }) => {
    if (error) return <div className="error">오류: {error}</div>
    if (!currentItem) return <div className="not-found">상품을 찾을 수 없습니다.</div>
 
+   const imgUrl = currentItem.imgs && currentItem.imgs[selectedImage] ? currentItem.imgs[selectedImage].imgUrl.replace(/\\/g, '/') : null
+
+   const baseURL = import.meta.env.VITE_APP_API_URL.replace(/\/$/, '') // 끝 '/' 제거
+   const imagePath = imgUrl && imgUrl.startsWith('/') ? imgUrl.slice(1) : imgUrl // 앞 '/' 제거
+
+   const fullImgUrl = imgUrl ? `${baseURL}/${imagePath}` : null
+
    return (
       <div className="item-detail-container">
          <div className="item-detail-content">
             {/* 이미지 섹션 */}
             <div className="image-section">
-               <div className="main-image">
-                  {currentItem.imgs && currentItem.imgs.length > 0 ? <img src={`${import.meta.env.VITE_APP_API_URL}/${currentItem.imgs[selectedImage]?.imgUrl.replace(/\\/g, '/')}`} alt={currentItem.itemNm} className="main-img" /> : <div className="no-image">이미지가 없습니다.</div>}
-               </div>
-
-               {/* {currentItem.imgs && currentItem.imgs.length > 1 && (
-                  <div className="thumbnail-list">
-                     {currentItem.imgs.map((img, index) => (
-                        <img key={index} src={`/${img.imgUrl}`} alt={`${currentItem.itemNm} ${index + 1}`} className={`thumbnail ${selectedImage === index ? 'active' : ''}`} onClick={() => setSelectedImage(index)} />
-                     ))}
-                  </div>
-               )} */}
+               <div className="main-image">{fullImgUrl ? <img src={fullImgUrl} alt={currentItem.itemNm} className="main-img" /> : <div className="no-image">이미지가 없습니다.</div>}</div>
             </div>
 
             {/* 상품 정보 섹션 */}
@@ -214,18 +211,17 @@ const ItemDetail = ({ onDeleteSubmit, onEditSubmit, onPriceProposal }) => {
          )}
 
          {/* 상품 이미지  */}
-         {currentItem.imgs && currentItem.imgs.length > 0 && (
-            <div className="item-images-section">
-               <h2>상품 상세 Detail </h2>
-               <div className="images-gallery">
-                  {currentItem.imgs.map((img, index) => (
-                     <div key={index} className="gallery-image-container">
-                        <img src={`${import.meta.env.VITE_APP_API_URL}/${img.imgUrl.replace(/\\/g, '/')}`} alt={`${currentItem.itemNm} ${index + 1}`} className="gallery-image" />
-                     </div>
-                  ))}
+         {currentItem.imgs.map((img, index) => {
+            const rawPath = img.imgUrl.replace(/\\/g, '/')
+            const cleanPath = rawPath.startsWith('/') ? rawPath.slice(1) : rawPath
+            const fullImgUrl = `${import.meta.env.VITE_APP_API_URL.replace(/\/$/, '')}/${cleanPath}`
+
+            return (
+               <div key={index} className="gallery-image-container">
+                  <img src={fullImgUrl} alt={`${currentItem.itemNm} ${index + 1}`} className="gallery-image" />
                </div>
-            </div>
-         )}
+            )
+         })}
 
          {/* 상품 상세 설명 */}
          <div className="item-description-section">

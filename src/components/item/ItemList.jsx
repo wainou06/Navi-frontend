@@ -182,7 +182,18 @@ const ItemsList = () => {
 
                            {/* 상품 이미지 */}
                            <div className="product-image" onClick={() => navigate(`/items/detail/${item.id}`)}>
-                              {item.imgs && item.imgs.length > 0 ? <img src={`${import.meta.env.VITE_APP_API_URL}/${item.imgs[0].imgUrl.replace(/\\/g, '/')}`} alt={item.itemNm} /> : <div className="placeholder-image">이미지</div>}
+                              {item.imgs && item.imgs.length > 0 ? (
+                                 (() => {
+                                    const rawPath = item.imgs[0].imgUrl.replace(/\\/g, '/')
+                                    const cleanPath = rawPath.startsWith('/') ? rawPath.slice(1) : rawPath
+                                    const baseURL = import.meta.env.VITE_APP_API_URL.replace(/\/$/, '')
+                                    const imageUrl = `${baseURL}/${cleanPath}`
+
+                                    return <img src={imageUrl} alt={item.itemNm} />
+                                 })()
+                              ) : (
+                                 <div className="placeholder-image">이미지</div>
+                              )}
                            </div>
 
                            {/* 상품 정보 */}

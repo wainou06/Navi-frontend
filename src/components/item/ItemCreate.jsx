@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, CloudUpload, Trash2, Save, X } from 'lucide-react'
-import { updateItem, fetchItem } from '../../features/itemsSlice.js'
-import { Container, Box, IconButton, Typography, Alert, Paper, Grid, TextField, FormControl, InputLabel, Select, MenuItem, Button, ImageList, ImageListItem, ImageListItemBar, CircularProgress } from '@mui/material'
+import { createItem } from '../../features/itemsSlice.js'
+// import { getKeywordThunk } from '../../features/keywordSlice' // 키워드 가져오는 액션
+import { Container, Box, IconButton, Typography, Alert, Paper, Grid, TextField, FormControl, InputLabel, Select, MenuItem, Button, ImageList, ImageListItem, ImageListItemBar, CircularProgress, Chip } from '@mui/material'
 import { Delete, Cancel } from '@mui/icons-material'
 import '../../styles/ItemCreate.css'
 
-const ItemEdit = () => {
+const ItemCreate = () => {
    const dispatch = useDispatch()
    const navigate = useNavigate()
-   const { id } = useParams() // URL에서 상품 ID 가져오기
-   const { updateLoading, error, currentItem } = useSelector((state) => state.items)
+   const { createLoading, error } = useSelector((state) => state.items)
+   // const { keywords } = useSelector((state) => state.keywords) // 키워드 목록 가져오기
 
    const [formData, setFormData] = useState({
       name: '',
@@ -19,48 +20,17 @@ const ItemEdit = () => {
       stock: '',
       content: '',
       status: 'available',
-      keywords: '',
+      keywords: [],
       images: [],
    })
 
    const [imagePreviews, setImagePreviews] = useState([])
    const [formErrors, setFormErrors] = useState({})
-   const [loading, setLoading] = useState(true)
 
-   // 기존 상품 데이터 불러오기
-   useEffect(() => {
-      const loadItemData = async () => {
-         try {
-            setLoading(true)
-            const result = await dispatch(fetchItem(id)).unwrap()
-
-            setFormData({
-               name: result.name || '',
-               price: result.price || '',
-               stock: result.stock || '',
-               content: result.content || '',
-               status: result.status || 'available',
-               keywords: result.keywords || '',
-               images: result.images || [],
-            })
-
-            // 기존 이미지 미리보기 설정
-            if (result.images && result.images.length > 0) {
-               setImagePreviews(result.images.map((img) => (typeof img === 'string' ? img : URL.createObjectURL(img))))
-            }
-         } catch (error) {
-            console.error('상품 정보 불러오기 실패:', error)
-            alert('상품 정보를 불러오는데 실패했습니다.')
-            navigate('/items/list')
-         } finally {
-            setLoading(false)
-         }
-      }
-
-      if (id) {
-         loadItemData()
-      }
-   }, [id, dispatch, navigate])
+   // useEffect(() => {
+   //    // 컴포넌트가 마운트되면 키워드 목록을 가져옵니다.
+   //    dispatch(getKeywordThunk())
+   // }, [dispatch])
 
    const handleInputChange = (e) => {
       const { name, value } = e.target
@@ -107,10 +77,8 @@ const ItemEdit = () => {
       const newImages = formData.images.filter((_, i) => i !== index)
       const newPreviews = imagePreviews.filter((_, i) => i !== index)
 
-      // 새로 업로드한 이미지의 URL만 해제 (기존 이미지는 문자열 URL이므로 제외)
-      if (typeof imagePreviews[index] === 'string' && imagePreviews[index].startsWith('blob:')) {
-         URL.revokeObjectURL(imagePreviews[index])
-      }
+      // URL 해제
+      URL.revokeObjectURL(imagePreviews[index])
 
       setFormData((prev) => ({
          ...prev,
@@ -126,15 +94,13 @@ const ItemEdit = () => {
          errors.name = '상품명을 입력해주세요.'
       }
 
-      if (!formData.price || formData.price <= 0) {
+      const priceNumber = Number(formData.price)
+      if (!priceNumber || priceNumber <= 0) {
          errors.price = '올바른 가격을 입력해주세요.'
       }
 
-      if (formData.stock === '' || formData.stock < 0) {
-         errors.stock = '올바른 재고수량을 입력해주세요.'
-      }
-
       setFormErrors(errors)
+      console.log('Errors:', errors)
       return Object.keys(errors).length === 0
    }
 
@@ -146,36 +112,35 @@ const ItemEdit = () => {
       }
 
       try {
-         const updateData = {
-            id: id,
-            itemData: formData,
-         }
-         await dispatch(updateItem(updateData)).unwrap()
-         alert('상품이 성공적으로 수정되었습니다.')
-         navigate('/items/list')
+         await dispatch(createItem(formData)).unwrap()
+         alert('상품이 성공적으로 등록되었습니다.')
+         navigate && navigate('/items/list')
       } catch (error) {
-         console.error('상품 수정 실패:', error)
+         console.error('상품 등록 실패:', error)
       }
    }
 
-   const handleCancel = () => {
-      if (window.confirm('수정을 취소하시겠습니까? 변경사항이 저장되지 않습니다.')) {
-         navigate('/items/list')
-      }
+   const handleReset = () => {
+      setFormData({
+         name: '',
+         price: '',
+         stock: '',
+         content: '',
+         status: 'available',
+         keywords: [],
+         images: [],
+      })
+      imagePreviews.forEach((url) => URL.revokeObjectURL(url))
+      setImagePreviews([])
+      setFormErrors({})
    }
 
-   // 로딩 중일 때
-   if (loading) {
-      return (
-         <Container maxWidth="md" sx={{ py: 4 }}>
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
-               <CircularProgress />
-               <Typography variant="h6" sx={{ ml: 2 }}>
-                  상품 정보를 불러오는 중...
-               </Typography>
-            </Box>
-         </Container>
-      )
+   const handleKeywordChange = (event) => {
+      const { value } = event.target
+      setFormData((prev) => ({
+         ...prev,
+         keywords: value,
+      }))
    }
 
    return (
@@ -186,9 +151,6 @@ const ItemEdit = () => {
                <IconButton onClick={() => navigate('/items/list')}>
                   <ArrowLeft />
                </IconButton>
-               <Typography variant="h4" component="h1" className="item-create-title">
-                  상품 수정
-               </Typography>
             </Box>
 
             {/* 에러 메시지 */}
@@ -212,13 +174,13 @@ const ItemEdit = () => {
                   {/* 가격 섹션 */}
                   <div className="form-section-card">
                      <div className="section-header">가격</div>
-                     <div className="section-description">상품 가격을 입력해주세요.</div>
+                     {/* <div className="section-description">상품 가격을 입력해주세요.</div> */}
                      <div className="section-content">
                         <Grid container spacing={2}>
-                           <Grid item xs={12} sm={6}>
+                           <Grid item xs={15} sm={6}>
                               <TextField
                                  fullWidth
-                                 label="가격"
+                                 label="상품 가격을 입력해주세요."
                                  name="price"
                                  type="number"
                                  value={formData.price}
@@ -230,25 +192,9 @@ const ItemEdit = () => {
                                  }}
                               />
                            </Grid>
-                           <Grid item xs={12} sm={6}>
-                              <TextField
-                                 fullWidth
-                                 label="재고수량"
-                                 name="stock"
-                                 type="number"
-                                 value={formData.stock}
-                                 onChange={handleInputChange}
-                                 error={!!formErrors.stock}
-                                 helperText={formErrors.stock}
-                                 InputProps={{
-                                    endAdornment: '개',
-                                 }}
-                              />
-                           </Grid>
                         </Grid>
                      </div>
                   </div>
-
                   {/* 이미지 업로드 섹션 */}
                   <div className="image-upload-container">
                      <div className="image-upload-header">
@@ -291,19 +237,26 @@ const ItemEdit = () => {
                         ))}
                      </div>
                   </div>
-
-                  {/* 키워드 섹션 */}
+                  {/* 키워드 선택 섹션 */}
                   <div className="form-section-card">
                      <div className="section-header">키워드 선택 ▼</div>
                      <div className="section-content">
-                        <TextField fullWidth name="keywords" value={formData.keywords} onChange={handleInputChange} placeholder="키워드를 쉼표로 구분해서 입력하세요" helperText="예: 의류, 여성, 캐주얼" />
+                        {/* <FormControl fullWidth>
+                           <InputLabel>키워드 선택</InputLabel>
+                           <Select name="keywords" value={formData.keywords} multiple onChange={handleKeywordChange} renderValue={(selected) => selected.join(', ')}>
+                              {keywords.map((keyword) => (
+                                 <MenuItem key={keyword.id} value={keyword.name}>
+                                    <Chip label={keyword.name} />
+                                 </MenuItem>
+                              ))}
+                           </Select>
+                        </FormControl> */}
                      </div>
                   </div>
-
                   {/* 상세설명 섹션 */}
                   <div className="description-section">
-                     <Typography className="description-title">상세 설명을 작성해주세요.</Typography>
-                     <TextField fullWidth name="content" value={formData.content} onChange={handleInputChange} multiline rows={6} placeholder="상품에 대한 상세한 설명을 입력하세요" variant="outlined" />
+                     {/* <Typography className="description-title">상세 설명을 작성해주세요.</Typography> */}
+                     <TextField fullWidth name="content" value={formData.content} onChange={handleInputChange} multiline rows={6} placeholder="상세 설명을 작성해주세요." variant="outlined" />
                      <div className="description-divider"></div>
                   </div>
 
@@ -314,7 +267,8 @@ const ItemEdit = () => {
                            <InputLabel>판매상태</InputLabel>
                            <Select name="status" value={formData.status} label="판매상태" onChange={handleInputChange}>
                               <MenuItem value="available">판매중</MenuItem>
-                              <MenuItem value="unavailable">품절</MenuItem>
+                              <MenuItem value="reserved">예약중</MenuItem>
+                              <MenuItem value="unavailable">판매완료</MenuItem>
                            </Select>
                         </FormControl>
                      </div>
@@ -323,11 +277,8 @@ const ItemEdit = () => {
                   {/* 버튼 섹션 */}
                   <div className="button-section">
                      <Box display="flex" gap={2}>
-                        <Button type="submit" variant="contained" startIcon={updateLoading ? <CircularProgress size={16} /> : <Save />} disabled={updateLoading} sx={{ flex: 1 }}>
-                           {updateLoading ? '수정 중...' : '상품수정'}
-                        </Button>
-                        <Button type="button" variant="outlined" startIcon={<Cancel />} onClick={handleCancel} sx={{ flex: 1 }}>
-                           취소
+                        <Button type="submit" variant="contained" startIcon={createLoading ? <CircularProgress size={16} /> : <Save />} disabled={createLoading} sx={{ flex: 2 }}>
+                           {createLoading ? '등록 중...' : '상품등록'}
                         </Button>
                      </Box>
                   </div>
@@ -338,4 +289,4 @@ const ItemEdit = () => {
    )
 }
 
-export default ItemEdit
+export default ItemCreate

@@ -1,9 +1,6 @@
-// itemsSlice.js - API는 건드리지 않고 이것만 수정
-
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { itemsAPI } from '../api/itemApi'
 
-// 기존 createAsyncThunk들은 그대로
 export const fetchItems = createAsyncThunk('items/fetchItems', async (params = {}, { rejectWithValue }) => {
    try {
       const response = await itemsAPI.getItems(params)
