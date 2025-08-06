@@ -1,0 +1,477 @@
+/* ItemsList.css */
+
+/* 전체 배경 */
+.items-list-container {
+   background: #f8f9fa;
+   min-height: 100vh;
+   padding: 0;
+}
+
+/* 상단 헤더 영역 */
+.top-header {
+   background: white;
+   border-bottom: 2px solid #ff6b35;
+   padding: 12px 24px;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   margin-bottom: 24px;
+}
+
+.logo-section {
+   display: flex;
+   align-items: center;
+   color: #ff6b35;
+   font-size: 20px;
+   font-weight: bold;
+}
+
+.search-section {
+   flex: 1;
+   max-width: 400px;
+   margin: 0 24px;
+}
+
+.top-search-input {
+   width: 100%;
+   padding: 8px 16px;
+   border: 1px solid #ddd;
+   border-radius: 20px;
+   font-size: 14px;
+   background: #f8f9fa;
+}
+
+.top-search-input:focus {
+   outline: none;
+   border-color: #ff6b35;
+   background: white;
+}
+
+.user-actions {
+   display: flex;
+   gap: 16px;
+   align-items: center;
+}
+
+.user-action-btn {
+   background: #ffeaa7;
+   border: none;
+   padding: 8px 16px;
+   border-radius: 16px;
+   font-size: 12px;
+   cursor: pointer;
+   transition: all 0.2s ease;
+}
+
+.user-action-btn:hover {
+   background: #fdcb6e;
+   transform: translateY(-1px);
+}
+
+/* 메인 컨테이너 */
+.main-container {
+   max-width: 1200px;
+   margin: 0 auto;
+   padding: 0 24px;
+}
+
+/* 상품 등록 버튼 */
+.register-button-section {
+   margin-bottom: 24px;
+}
+
+.register-btn {
+   background: #ff6b35 !important;
+   color: white !important;
+   border-radius: 20px !important;
+   padding: 10px 24px !important;
+   font-weight: 600 !important;
+   border: none !important;
+   box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3) !important;
+   transition: all 0.2s ease !important;
+}
+
+.register-btn:hover {
+   background: #e55a2b !important;
+   transform: translateY(-2px) !important;
+   box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4) !important;
+}
+
+/* 구분선 */
+.section-divider {
+   border: none;
+   height: 2px;
+   background: linear-gradient(90deg, #ff6b35 0%, #74b9ff 100%);
+   margin: 24px 0;
+   border-radius: 1px;
+}
+
+.section-title {
+   text-align: center;
+   color: #74b9ff;
+   font-weight: 600;
+   margin: 8px 0;
+   font-size: 14px;
+}
+
+/* 필터 버튼들 */
+.filter-section {
+   display: flex;
+   gap: 12px;
+   margin-bottom: 24px;
+   align-items: center;
+}
+
+.filter-btn {
+   background: #e8f4f8 !important;
+   color: #0984e3 !important;
+   border: 1px solid #74b9ff !important;
+   border-radius: 16px !important;
+   padding: 6px 16px !important;
+   font-size: 12px !important;
+   font-weight: 500 !important;
+   text-transform: none !important;
+   transition: all 0.2s ease !important;
+}
+
+.filter-btn:hover {
+   background: #74b9ff !important;
+   color: white !important;
+   transform: translateY(-1px) !important;
+}
+
+.filter-btn.active {
+   background: #74b9ff !important;
+   color: white !important;
+}
+
+.search-actions {
+   margin-left: auto;
+}
+
+.search-btn {
+   background: #00cec9 !important;
+   color: white !important;
+   border-radius: 16px !important;
+   padding: 6px 20px !important;
+   font-size: 12px !important;
+   font-weight: 600 !important;
+   border: none !important;
+}
+
+.search-btn:hover {
+   background: #00b894 !important;
+   transform: translateY(-1px) !important;
+}
+
+/* 상품 그리드 */
+.products-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+   gap: 16px;
+   margin-bottom: 32px;
+}
+
+/* 상품 카드 */
+.product-card {
+   background: white !important;
+   border-radius: 8px !important;
+   overflow: hidden !important;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+   transition: all 0.2s ease !important;
+   position: relative !important;
+}
+
+.product-card:hover {
+   transform: translateY(-2px) !important;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 상품 상태 라벨 */
+.product-status-label {
+   position: absolute !important;
+   top: 8px !important;
+   left: 8px !important;
+   z-index: 2 !important;
+   font-size: 10px !important;
+   font-weight: 600 !important;
+   padding: 2px 8px !important;
+   border-radius: 4px !important;
+}
+
+.status-available {
+   background: #00b894 !important;
+   color: white !important;
+}
+
+.status-sold {
+   background: #ffeaa7 !important;
+   color: #2d3436 !important;
+}
+
+.status-reserved {
+   background: #fd79a8 !important;
+   color: white !important;
+}
+
+/* 상품 이미지 */
+.product-image {
+   width: 100% !important;
+   height: 150px !important;
+   background: #f1f2f6 !important;
+   display: flex !important;
+   align-items: center !important;
+   justify-content: center !important;
+   position: relative !important;
+}
+
+.product-image img {
+   width: 100% !important;
+   height: 100% !important;
+   object-fit: cover !important;
+}
+
+.placeholder-image {
+   color: #bbb !important;
+   font-size: 12px !important;
+   text-align: center !important;
+}
+
+/* 상품 정보 */
+.product-info {
+   padding: 12px !important;
+}
+
+.product-title {
+   font-size: 14px !important;
+   font-weight: 600 !important;
+   color: #2d3436 !important;
+   margin-bottom: 4px !important;
+   line-height: 1.2 !important;
+   height: 32px !important;
+   overflow: hidden !important;
+   display: -webkit-box !important;
+   -webkit-line-clamp: 2 !important;
+   -webkit-box-orient: vertical !important;
+}
+
+.product-price {
+   font-size: 16px !important;
+   font-weight: 700 !important;
+   color: #e17055 !important;
+   margin-bottom: 4px !important;
+}
+
+.product-meta {
+   font-size: 11px !important;
+   color: #636e72 !important;
+   line-height: 1.3 !important;
+}
+
+/* 상품 액션 버튼들 - 호버 시에만 표시 */
+.product-actions {
+   position: absolute !important;
+   top: 8px !important;
+   right: 8px !important;
+   display: flex !important;
+   gap: 4px !important;
+   opacity: 0 !important;
+   transition: opacity 0.2s ease !important;
+}
+
+.product-card:hover .product-actions {
+   opacity: 1 !important;
+}
+
+.action-btn {
+   background: rgba(255, 255, 255, 0.9) !important;
+   border: none !important;
+   border-radius: 50% !important;
+   width: 28px !important;
+   height: 28px !important;
+   display: flex !important;
+   align-items: center !important;
+   justify-content: center !important;
+   cursor: pointer !important;
+   transition: all 0.2s ease !important;
+   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+.action-btn:hover {
+   background: white !important;
+   transform: scale(1.1) !important;
+}
+
+.action-btn.delete:hover {
+   background: #fd79a8 !important;
+   color: white !important;
+}
+
+.action-btn.edit:hover {
+   background: #74b9ff !important;
+   color: white !important;
+}
+
+.action-btn.view:hover {
+   background: #00cec9 !important;
+   color: white !important;
+}
+
+/* 페이지네이션 */
+.pagination-section {
+   display: flex;
+   justify-content: center;
+   margin: 32px 0;
+}
+
+.items-list-container .MuiPagination-root {
+   background: white;
+   border-radius: 8px;
+   padding: 8px 16px;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.items-list-container .MuiPaginationItem-root {
+   border-radius: 6px;
+   font-weight: 500;
+   margin: 0 2px;
+}
+
+.items-list-container .MuiPaginationItem-root.Mui-selected {
+   background: #74b9ff;
+   color: white;
+}
+
+.items-list-container .MuiPaginationItem-root:hover {
+   background: rgba(116, 185, 255, 0.1);
+}
+
+/* 빈 상태 */
+.empty-state {
+   text-align: center;
+   padding: 64px 20px;
+   background: white;
+   border-radius: 8px;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state-icon {
+   font-size: 64px !important;
+   color: #ddd !important;
+   margin-bottom: 16px !important;
+}
+
+.empty-state-title {
+   font-size: 18px !important;
+   font-weight: 600 !important;
+   color: #636e72 !important;
+   margin-bottom: 8px !important;
+}
+
+.empty-state-subtitle {
+   font-size: 14px !important;
+   color: #b2bec3 !important;
+   margin-bottom: 24px !important;
+}
+
+/* 로딩 */
+.loading-state {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   padding: 64px;
+   background: white;
+   border-radius: 8px;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 알림 메시지 */
+.items-list-container .MuiAlert-root {
+   border-radius: 8px;
+   margin-bottom: 16px;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 다이얼로그 */
+.items-list-container .MuiDialog-paper {
+   border-radius: 8px;
+   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.items-list-container .MuiDialogTitle-root {
+   background: #f8f9fa;
+   color: #2d3436;
+   font-weight: 700;
+   border-bottom: 1px solid #e9ecef;
+}
+
+.items-list-container .MuiDialogContent-root {
+   padding: 24px;
+}
+
+.items-list-container .MuiDialogActions-root {
+   padding: 16px 24px;
+   background: #f8f9fa;
+   border-top: 1px solid #e9ecef;
+}
+
+.items-list-container .MuiDialogActions-root .MuiButton-contained {
+   background: #fd79a8;
+   border-radius: 6px;
+}
+
+.items-list-container .MuiDialogActions-root .MuiButton-text {
+   color: #636e72;
+   border-radius: 6px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+   .top-header {
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+   }
+
+   .search-section {
+      margin: 0;
+      max-width: none;
+      width: 100%;
+   }
+
+   .user-actions {
+      width: 100%;
+      justify-content: center;
+   }
+
+   .main-container {
+      padding: 0 16px;
+   }
+
+   .products-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+   }
+
+   .filter-section {
+      flex-wrap: wrap;
+      gap: 8px;
+   }
+
+   .product-image {
+      height: 120px !important;
+   }
+
+   .product-info {
+      padding: 8px !important;
+   }
+
+   .product-title {
+      font-size: 12px !important;
+      height: 28px !important;
+   }
+
+   .product-price {
+      font-size: 14px !important;
+   }
+}

@@ -22,9 +22,18 @@ module.exports = class Item extends Sequelize.Model {
             },
             orderId: {
                type: Sequelize.INTEGER,
-               allowNull: false,
+               allowNull: true,
                references: {
                   model: 'Orders',
+                  key: 'id',
+               },
+            },
+            userId: {
+               // 유저 외래 키 추가
+               type: Sequelize.INTEGER,
+               allowNull: false,
+               references: {
+                  model: 'Users',
                   key: 'id',
                },
             },
@@ -61,6 +70,13 @@ module.exports = class Item extends Sequelize.Model {
       db.Item.hasMany(db.ItemKeyword, {
          foreignKey: 'itemId',
          otherKey: 'keywordId',
+      })
+
+      // Item -> User (N:1) (아이템은 하나의 유저에 속함)
+      db.Item.belongsTo(db.User, {
+         foreignKey: 'userId',
+         targetKey: 'id',
+         as: 'user',
       })
    }
 }

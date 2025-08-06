@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize')
-const env = process.env.NODE_ENV || 'development'
+const env = 'development'
 const config = require('../config/config')[env]
 
 const Img = require('./img')
