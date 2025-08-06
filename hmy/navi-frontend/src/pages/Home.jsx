@@ -11,6 +11,7 @@ import { Navigation } from 'swiper/modules'
 import { Link } from 'react-router-dom'
 
 import ItemSellList from '../components/item/ItemSellList'
+import RentalSellList from '../components/rental/RentalSellList'
 
 function Home({ searchTerm }) {
    return (
@@ -41,11 +42,15 @@ function Home({ searchTerm }) {
          </div>
          <div>
             <h1 style={{ fontFamily: 'Ghanachocolate, sans-serif' }}>나누는 중…</h1>
-            <ItemSellList searchTerm={searchTerm} />
+            <div className="item">
+               <ItemSellList searchTerm={searchTerm} />
+            </div>
          </div>
          <div>
             <h1 style={{ fontFamily: 'Ghanachocolate, sans-serif' }}>빌려주는 중…</h1>
-            <ItemSellList searchTerm={searchTerm} />
+            <div className="rental">
+               <RentalSellList searchTerm={searchTerm} />
+            </div>
          </div>
       </div>
    )
